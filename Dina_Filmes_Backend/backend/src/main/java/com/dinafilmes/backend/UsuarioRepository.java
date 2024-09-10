@@ -10,5 +10,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
         @Query(value = "select * from usuario where email=?1 and senha=?2 ",
         nativeQuery = true)
         Optional<UsuarioEntity> fazerLogin(String email, String senha);
+
+        boolean existsByEmail(String email);
     
 }

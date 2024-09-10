@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,9 +18,37 @@ public class UsuarioEntity {
     private String nomeUsuario;
     private String email;
     private String telefone;
-    private boolean foto;
     private String senha;
+    private boolean ativo;
+    private boolean aviso1;
+    private boolean aviso2;
+    @Lob
+    private byte[] foto;
     
+    public byte[] getFoto() {
+        return foto;
+    }
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
+    public boolean isAtivo() {
+        return ativo;
+    }
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+    public boolean isAviso1() {
+        return aviso1;
+    }
+    public void setAviso1(boolean aviso1) {
+        this.aviso1 = aviso1;
+    }
+    public boolean isAviso2() {
+        return aviso2;
+    }
+    public void setAviso2(boolean aviso2) {
+        this.aviso2 = aviso2;
+    }
     public int getCodigoUsuario() {
         return codigoUsuario;
     }
@@ -44,18 +73,11 @@ public class UsuarioEntity {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-    public boolean isFoto() {
-        return foto;
-    }
-    public void setFoto(boolean foto) {
-        this.foto = foto;
-    }
     public String getSenha() {
         return senha;
     }
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
     
 }
