@@ -1,13 +1,19 @@
 package com.dinafilmes.backend;
 
-import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
 
+import org.springframework.stereotype.Component;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuario")
@@ -19,18 +25,18 @@ public class UsuarioEntity {
     private String email;
     private String telefone;
     private String senha;
+    private String foto;
     private boolean ativo;
     private boolean aviso1;
     private boolean aviso2;
-    @Lob
-    private byte[] foto;
-    
-    public byte[] getFoto() {
-        return foto;
-    }
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
+
+    @CreationTimestamp
+    private LocalDateTime dataCriacao;
+
+    @UpdateTimestamp
+    private LocalDateTime dataAtualizacao;
+
+
     public boolean isAtivo() {
         return ativo;
     }
@@ -49,6 +55,14 @@ public class UsuarioEntity {
     public void setAviso2(boolean aviso2) {
         this.aviso2 = aviso2;
     }
+
+    public String getFoto() {
+        return foto;
+    }
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
     public int getCodigoUsuario() {
         return codigoUsuario;
     }
@@ -78,6 +92,19 @@ public class UsuarioEntity {
     }
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
     }
     
 }
