@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @RestController
 @CrossOrigin("*")
@@ -45,34 +48,34 @@ public ResponseEntity<Boolean> verificarEmail(@RequestParam String email) {
     return ResponseEntity.ok(exists);
 }
 
-    @PutMapping("/api/usuario")
-    public ResponseEntity<String> alterar(@RequestBody UsuarioEntity obj) {
-        try {
-            // Verifica se o código do usuário é válido
-            if (obj.getCodigoUsuario() <= 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Código do usuário inválido");
-            }
+@PutMapping("/api/usuario")
+public ResponseEntity<String> alterar(@RequestBody UsuarioEntity obj) {
+    try {
+        Optional<UsuarioEntity> usuarioOptional = repository.findById(obj.getCodigoUsuario());
 
-            // Busca o usuário existente
-            Optional<UsuarioEntity> usuarioOptional = repository.findById(obj.getCodigoUsuario());
-
-            if (!usuarioOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
-            }
-
+        if (usuarioOptional.isPresent()) {
             UsuarioEntity usuarioExistente = usuarioOptional.get();
-
-            // Atualiza somente o campo nomeUsuario
             usuarioExistente.setNomeUsuario(obj.getNomeUsuario());
-            //usuarioExistente.setDataAtualizacao(new Date()); // Atualiza a data de modificação
-
-            // Salva a atualização
+            usuarioExistente.setDataAtualizacao(LocalDateTime.now());
             repository.save(usuarioExistente);
-            return ResponseEntity.ok("Cadastro atualizado");
-        } catch (Exception e) {
-            e.printStackTrace(); // Log da exceção para depuração
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o cadastro");
+            return ResponseEntity.ok(("Cadastro atualizado com sucesso"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o cadastro");
     }
+}
+
+@GetMapping("/api/usuario/{codigo}")
+public ResponseEntity<UsuarioEntity> 
+    carregar(@PathVariable int codigo){
+    Optional<UsuarioEntity> obj = repository.findById(codigo);
+    if(obj.isPresent())    
+        return ResponseEntity.ok(obj.get());
+    else
+        return ResponseEntity.ok(new UsuarioEntity());
+}
     
 }
