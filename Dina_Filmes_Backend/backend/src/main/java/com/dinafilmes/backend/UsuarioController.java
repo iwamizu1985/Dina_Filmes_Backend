@@ -57,6 +57,7 @@ public ResponseEntity<String> alterar(@RequestBody UsuarioEntity obj) {
             UsuarioEntity usuarioExistente = usuarioOptional.get();
             usuarioExistente.setNomeUsuario(obj.getNomeUsuario());
             usuarioExistente.setDataAtualizacao(LocalDateTime.now());
+            usuarioExistente.setSenha(obj.getSenha());
             repository.save(usuarioExistente);
             return ResponseEntity.ok(("Cadastro atualizado com sucesso"));
         } else {
