@@ -10,4 +10,5 @@ public interface FilmeRepository extends JpaRepository <FilmeEntity, Integer> {
     List<FilmeEntity> findByNomeFilmeContainingIgnoreCase(String search);
 
     List<FilmeEntity> findByGeneroContainingIgnoreCase(String categoria);
+
 }
