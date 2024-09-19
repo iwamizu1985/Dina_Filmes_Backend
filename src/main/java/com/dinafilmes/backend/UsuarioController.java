@@ -1,5 +1,6 @@
 package com.dinafilmes.backend;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.util.ArrayUtils;
+
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Optional;
 import java.util.Date;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 
 
@@ -79,5 +89,57 @@ public ResponseEntity<UsuarioEntity>
     else
         return ResponseEntity.ok(new UsuarioEntity());
 }
+@PostMapping("/api/usuario/{codigo}/upload-foto")
+public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam("foto") MultipartFile file) {
+    Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
+    
+    if (!file.isEmpty() && usuarioOptional.isPresent()) {
+        try {
+            // Converte MultipartFile para Byte[] manualmente
+            byte[] bytes = file.getBytes();
+            Byte[] byteObjects = new Byte[bytes.length];
+            
+            for (int i = 0; i < bytes.length; i++) {
+                byteObjects[i] = bytes[i];
+            }
+
+            // Salva a foto no usuário
+            UsuarioEntity usuario = usuarioOptional.get();
+            usuario.setFotoUsuario(byteObjects);
+            repository.save(usuario);
+            
+            return ResponseEntity.ok("Foto enviada com sucesso!");
+        } catch (IOException e) {
+            e.printStackTrace();  // Log detalhado para depuração
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar a foto.");
+        }
+    } else if (file.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo de foto vazio.");
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+    }
+}
+
+@GetMapping("/api/usuario/{codigo}/foto")
+public void renderFoto(@PathVariable int codigo, HttpServletResponse response) throws IOException {
+    Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
+    
+    if (usuarioOptional.isPresent() && usuarioOptional.get().getFotoUsuario() != null) {
+        // Converte Byte[] para byte[] manualmente
+        Byte[] fotoUsuario = usuarioOptional.get().getFotoUsuario();
+        byte[] byteArray = new byte[fotoUsuario.length];
+        
+        for (int i = 0; i < fotoUsuario.length; i++) {
+            byteArray[i] = fotoUsuario[i];
+        }
+
+        response.setContentType("image/jpeg");
+        InputStream is = new ByteArrayInputStream(byteArray);
+        IOUtils.copy(is, response.getOutputStream());
+    } else {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+    }
+}
+
     
 }

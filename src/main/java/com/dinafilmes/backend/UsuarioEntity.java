@@ -2,18 +2,18 @@ package com.dinafilmes.backend;
 
 import java.time.LocalDateTime;
 
-import org.springframework.stereotype.Component;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "usuario")
@@ -36,6 +36,16 @@ public class UsuarioEntity {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
+    @Lob
+    private Byte[] fotoUsuario;
+
+
+    public Byte[] getFotoUsuario() {
+        return fotoUsuario;
+    }
+    public void setFotoUsuario(Byte[] fotoUsuario) {
+        this.fotoUsuario = fotoUsuario;
+    }
 
     public boolean isAtivo() {
         return ativo;
