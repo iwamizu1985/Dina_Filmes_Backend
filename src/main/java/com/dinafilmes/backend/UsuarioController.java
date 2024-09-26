@@ -89,7 +89,8 @@ public ResponseEntity<UsuarioEntity>
     else
         return ResponseEntity.ok(new UsuarioEntity());
 }
-@PostMapping("/api/usuario/{codigo}/upload-foto")
+
+@PostMapping("/api/usuario/{codigo}/foto")
 public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam("foto") MultipartFile file) {
     Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
     
@@ -103,9 +104,13 @@ public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam
                 byteObjects[i] = bytes[i];
             }
 
-            // Salva a foto no usuário
+            // Inferir o MIME type a partir da extensão do arquivo
+            String fotoUsuarioMimeType = file.getContentType();
+
+            // Salva a foto e o MIME type no usuário
             UsuarioEntity usuario = usuarioOptional.get();
             usuario.setFotoUsuario(byteObjects);
+            usuario.setFotoUsuarioMimeType(fotoUsuarioMimeType); // Armazena o MIME type
             repository.save(usuario);
             
             return ResponseEntity.ok("Foto enviada com sucesso!");
@@ -120,6 +125,7 @@ public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam
     }
 }
 
+
 @GetMapping("/api/usuario/{codigo}/foto")
 public void renderFoto(@PathVariable int codigo, HttpServletResponse response) throws IOException {
     Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
@@ -133,7 +139,8 @@ public void renderFoto(@PathVariable int codigo, HttpServletResponse response) t
             byteArray[i] = fotoUsuario[i];
         }
 
-        response.setContentType("image/jpeg");
+        String fotoUsuarioMimeType = usuarioOptional.get().getFotoUsuarioMimeType();
+        response.setContentType(fotoUsuarioMimeType);
         InputStream is = new ByteArrayInputStream(byteArray);
         IOUtils.copy(is, response.getOutputStream());
     } else {

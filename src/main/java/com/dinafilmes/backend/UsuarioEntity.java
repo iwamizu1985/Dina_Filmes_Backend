@@ -29,6 +29,7 @@ public class UsuarioEntity {
     private boolean ativo;
     private boolean aviso1;
     private boolean aviso2;
+     
 
     @CreationTimestamp
     private LocalDateTime dataCriacao;
@@ -39,7 +40,15 @@ public class UsuarioEntity {
     @Lob
     private Byte[] fotoUsuario;
 
+    private String fotoUsuarioMimeType;
 
+
+    public String getFotoUsuarioMimeType() {
+        return fotoUsuarioMimeType;
+    }
+    public void setFotoUsuarioMimeType(String fotoUsuarioMimeType) {
+        this.fotoUsuarioMimeType = fotoUsuarioMimeType;
+    }
     public Byte[] getFotoUsuario() {
         return fotoUsuario;
     }
