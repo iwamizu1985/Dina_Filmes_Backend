@@ -91,7 +91,7 @@ public ResponseEntity<UsuarioEntity>
 }
 
 @PostMapping("/api/usuario/{codigo}/foto")
-public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam("foto") MultipartFile file) {
+public ResponseEntity<String> uploadFotoUsuario(@PathVariable int codigo, @RequestParam("fotoUsuario") MultipartFile file) {
     Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
     
     if (!file.isEmpty() && usuarioOptional.isPresent()) {
@@ -127,7 +127,7 @@ public ResponseEntity<String> uploadFoto(@PathVariable int codigo, @RequestParam
 
 
 @GetMapping("/api/usuario/{codigo}/foto")
-public void renderFoto(@PathVariable int codigo, HttpServletResponse response) throws IOException {
+public void renderFotoUsuario(@PathVariable int codigo, HttpServletResponse response) throws IOException {
     Optional<UsuarioEntity> usuarioOptional = repository.findById(codigo);
     
     if (usuarioOptional.isPresent() && usuarioOptional.get().getFotoUsuario() != null) {

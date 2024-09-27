@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +25,6 @@ public class UsuarioEntity {
     private String email;
     private String telefone;
     private String senha;
-    private String foto;
     private boolean ativo;
     private boolean aviso1;
     private boolean aviso2;
@@ -38,6 +37,7 @@ public class UsuarioEntity {
     private LocalDateTime dataAtualizacao;
 
     @Lob
+    @Column(name = "foto_usuario", columnDefinition = "LONGBLOB")
     private Byte[] fotoUsuario;
 
     private String fotoUsuarioMimeType;
@@ -73,13 +73,6 @@ public class UsuarioEntity {
     }
     public void setAviso2(boolean aviso2) {
         this.aviso2 = aviso2;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-    public void setFoto(String foto) {
-        this.foto = foto;
     }
 
     public int getCodigoUsuario() {
