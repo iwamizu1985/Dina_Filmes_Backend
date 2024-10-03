@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface FilmeRepository extends JpaRepository <FilmeEntity, Integer> {
     List<FilmeEntity> findByNomeFilmeContainingIgnoreCase(String search);
 

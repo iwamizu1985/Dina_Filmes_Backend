@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 
+@SuppressWarnings("unused")
 @RestController
 @CrossOrigin("*")
 public class UsuarioController {

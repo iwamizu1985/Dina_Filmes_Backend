@@ -11,6 +11,7 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.IdClass;
 
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "lista", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"codigoFilme", "codigoUsuario"})
@@ -23,45 +24,47 @@ public class ListaEntity {
     private int codigoFilme;
     private int codigoUsuario;
     private boolean filmeFavorito;
-    private boolean filmeJaVisto;
-    private boolean filmeAAssitir;
-
+    private boolean filmeAssistido;
+    private boolean filmeAAssistir;
+    
     public int getCodigoLista() {
         return codigoLista;
-    }
-    public void setCodigoLista(int codigoLista) {
-        this.codigoLista = codigoLista;
     }
     public int getCodigoFilme() {
         return codigoFilme;
     }
-    public void setCodigoFilme(int codigoFilme) {
-        this.codigoFilme = codigoFilme;
-    }
     public int getCodigoUsuario() {
         return codigoUsuario;
-    }
-    public void setCodigoUsuario(int codigoUsuario) {
-        this.codigoUsuario = codigoUsuario;
     }
     public boolean isFilmeFavorito() {
         return filmeFavorito;
     }
+    public boolean isFilmeAssistido() {
+        return filmeAssistido;
+    }
+    public boolean isFilmeAAssistir() {
+        return filmeAAssistir;
+    }
+    public void setCodigoLista(int codigoLista) {
+        this.codigoLista = codigoLista;
+    }
+    public void setCodigoFilme(int codigoFilme) {
+        this.codigoFilme = codigoFilme;
+    }
+    public void setCodigoUsuario(int codigoUsuario) {
+        this.codigoUsuario = codigoUsuario;
+    }
     public void setFilmeFavorito(boolean filmeFavorito) {
         this.filmeFavorito = filmeFavorito;
     }
-    public boolean isFilmeJaVisto() {
-        return filmeJaVisto;
+    public void setFilmeAssistido(boolean filmeAssistido) {
+        this.filmeAssistido = filmeAssistido;
     }
-    public void setFilmeJaVisto(boolean filmeJaVisto) {
-        this.filmeJaVisto = filmeJaVisto;
+    public void setFilmeAAssistir(boolean filmeAAssistir) {
+        this.filmeAAssistir = filmeAAssistir;
     }
-    public boolean isFilmeAAssitir() {
-        return filmeAAssitir;
-    }
-    public void setFilmeAAssitir(boolean filmeAAssitir) {
-        this.filmeAAssitir = filmeAAssitir;
-    }
+
+   
 
        
 }
