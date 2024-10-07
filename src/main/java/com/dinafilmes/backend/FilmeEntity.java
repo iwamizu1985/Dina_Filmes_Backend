@@ -26,6 +26,7 @@ public class FilmeEntity {
     private String ondeAssistir;
     private String foto;
     private String sinopse;
+    private String trailerUrl;
 
     public String getClassificacaoIndicativa() {
         return classificacaoIndicativa;
@@ -33,8 +34,7 @@ public class FilmeEntity {
     public void setClassificacaoIndicativa(String classificacaoIndicativa) {
         this.classificacaoIndicativa = classificacaoIndicativa;
     }
-    
-    
+      
     public String getSinopse() {
         return sinopse;
     }
@@ -102,6 +102,12 @@ public class FilmeEntity {
     }
     public void setOndeAssistir(String ondeAssistir) {
         this.ondeAssistir = ondeAssistir;
+    }
+    public String getTrailerUrl() {
+        return trailerUrl;
+    }
+    public void setTrailerUrl(String trailerUrl) {
+        this.trailerUrl = trailerUrl;
     }
     
     
