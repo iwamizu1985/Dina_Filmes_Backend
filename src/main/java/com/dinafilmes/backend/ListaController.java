@@ -145,8 +145,6 @@ public ResponseEntity<ListaEntity> desassistirFilme(@RequestBody ListaEntity lis
 
 
 
-
-
 @GetMapping("/api/assistir")
     public ResponseEntity<List<FilmeEntity>> listarAassistir(@RequestParam int codigoUsuario) {
         List<FilmeEntity> assistir = repository.carregarListaAAssistir(codigoUsuario);
@@ -166,7 +164,7 @@ public ResponseEntity<ListaEntity> desassistirFilme(@RequestBody ListaEntity lis
             if (assistirExistente.isPresent()) {
                 // Se já existe, busca a entidade e atualiza o estado de à assistir
                 ListaEntity assistir = assistirExistente.get();
-                assistir.setFilmeFavorito(true); // Colocar  o filme na lista de à assistir
+                assistir.setFilmeAAssistir(true); // Colocar  o filme na lista de à assistir
                 // Salva a atualização
                 repository.save(assistir); 
                 return ResponseEntity.ok(assistir); // Retorna o objeto atualizado
@@ -183,10 +181,10 @@ public ResponseEntity<ListaEntity> desassistirFilme(@RequestBody ListaEntity lis
     }
 
     @GetMapping("/api/lista/assistir")
-    public ResponseEntity<Boolean> verificarSeAAssistido(
+    public ResponseEntity<Boolean> verificarSeAAssistir(
     @RequestParam int codigoUsuario, @RequestParam int codigoFilme) {
     
-    Optional<ListaEntity> assistir = repository.verificarFilmeFavorito(codigoUsuario, codigoFilme);
+    Optional<ListaEntity> assistir = repository.verificarFilmeAAssistir(codigoUsuario, codigoFilme);
     return ResponseEntity.ok(assistir.isPresent()); // Retorna true se o filme for colocado na lista à assistir, false caso contrário
 }
 
@@ -197,7 +195,7 @@ public ResponseEntity<ListaEntity> desaassistirFilme(@RequestBody ListaEntity li
     
     if (aassistirExistente.isPresent()) {
         ListaEntity aassistir = aassistirExistente.get();
-        aassistir.setFilmeFavorito(false); // Desfavoritar o filme
+        aassistir.setFilmeAAssistir(false); // Desaassistir o filme
         repository.save(aassistir); // Salva a atualização
         return ResponseEntity.ok(aassistir); // Retorna o objeto atualizado
     } else {

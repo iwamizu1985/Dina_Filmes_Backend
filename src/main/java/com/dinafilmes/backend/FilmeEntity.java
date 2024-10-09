@@ -2,6 +2,7 @@ package com.dinafilmes.backend;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +26,11 @@ public class FilmeEntity {
     private String classificacaoIndicativa;
     private String ondeAssistir;
     private String foto;
-    private String sinopse;
     private String trailerUrl;
+    
+    @Column(length = 2555)
+    private String sinopse;
+    
 
     public String getClassificacaoIndicativa() {
         return classificacaoIndicativa;
@@ -109,7 +113,5 @@ public class FilmeEntity {
     public void setTrailerUrl(String trailerUrl) {
         this.trailerUrl = trailerUrl;
     }
-    
-    
-    
+            
 }
