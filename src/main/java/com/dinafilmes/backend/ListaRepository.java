@@ -14,9 +14,11 @@ public interface ListaRepository extends JpaRepository<ListaEntity, Integer> {
     List<FilmeEntity> carregarListaFavoritos(int codigoUsuario);
 
 
+    @Query("SELECT l FROM ListaEntity l WHERE l.codigoUsuario = :codigoUsuario AND l.codigoFilme = :codigoFilme AND l.filmeFavorito = true")
+Optional<ListaEntity> verificarFilmeFavorito(@Param("codigoUsuario") int codigoUsuario, @Param("codigoFilme") int codigoFilme);
 
-    @Query("SELECT l FROM ListaEntity l WHERE l.codigoUsuario = ?1 AND l.codigoFilme = ?2")
-    Optional<ListaEntity> verificarFilmeFavorito(int codigoUsuario, int codigoFilme);
+    // @Query("SELECT l FROM ListaEntity l WHERE l.codigoUsuario = ?1 AND l.codigoFilme = ?2")
+    // Optional<ListaEntity> verificarFilmeFavorito(int codigoUsuario, int codigoFilme);
 
     
     @Query("SELECT f FROM FilmeEntity f JOIN ListaEntity l ON f.codigoFilme = l.codigoFilme WHERE l.codigoUsuario = ?1 AND l.filmeAssistido = true")
