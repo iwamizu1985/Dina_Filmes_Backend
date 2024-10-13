@@ -36,20 +36,21 @@ public class ListaController {
     @PutMapping("/api/lista/favoritar")
     public ResponseEntity<?> adicionarFavorito(@RequestBody ListaEntity listaEntity) {
         try {
-            // Verifica se o filme já está na lista de favoritos do usuário
-            Optional<ListaEntity> favoritoExistente = repository.verificarFilmeFavorito(listaEntity.getCodigoUsuario(), listaEntity.getCodigoFilme());
-            
-            if (favoritoExistente.isPresent()) {
-                // Se já existe, busca a entidade e atualiza o estado do favorito
-                ListaEntity favorito = favoritoExistente.get();
-                favorito.setFilmeFavorito(true); // Favoritar o filme
+            // Busca o codigoLista com base no codigoUsuario e codigoFilme
+            Optional<Integer> codigoListaOpt = repository.verificarCodigoLista(listaEntity.getCodigoUsuario(), listaEntity.getCodigoFilme());
+    
+            if (codigoListaOpt.isPresent()) {
+                // Atualiza a entrada existente
+                int codigoLista = codigoListaOpt.get();
+                ListaEntity favorito = repository.findById(codigoLista).orElseThrow();
+                favorito.setFilmeFavorito(true); // Atualiza o campo filmeFavorito
+    
                 // Salva a atualização
                 repository.save(favorito); 
                 return ResponseEntity.ok(favorito); // Retorna o objeto atualizado
             } else {
                 // Se não existe, cria uma nova entrada
                 listaEntity.setFilmeFavorito(true);
-                // Certifique-se de que as outras propriedades são inicializadas corretamente
                 ListaEntity savedEntity = repository.save(listaEntity);
                 return ResponseEntity.ok(savedEntity); // Retorna a nova entrada
             }
@@ -57,6 +58,7 @@ public class ListaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
         }
     }
+    
 
     @GetMapping("/api/lista/favorito")
     public ResponseEntity<Boolean> verificarSeFavorito(
