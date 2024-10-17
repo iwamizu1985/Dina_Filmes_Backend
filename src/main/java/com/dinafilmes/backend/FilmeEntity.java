@@ -28,7 +28,7 @@ public class FilmeEntity {
     private String foto;
     private String trailerUrl;
     
-    @Column(length = 2555)
+    @Column(length = 2550)
     private String sinopse;
     
 

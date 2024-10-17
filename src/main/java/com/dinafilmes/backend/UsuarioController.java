@@ -1,3 +1,88 @@
+// package com.dinafilmes.backend;
+
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.HttpStatus;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.*;
+// import org.springframework.web.multipart.MultipartFile;
+// import jakarta.servlet.http.HttpServletResponse;
+// import java.io.ByteArrayInputStream;
+// import java.io.IOException;
+// import java.io.InputStream;
+// import java.time.LocalDateTime;
+// import java.util.Optional;
+// import java.util.UUID;
+
+// @SuppressWarnings("unused")
+// @RestController
+// @CrossOrigin("*")
+// public class UsuarioController {
+
+//     @Autowired
+//     private UsuarioRepository repository;
+
+//     // @Autowired
+//     // private EmailService emailService;
+
+//     @PostMapping("/api/usuario")
+//     public ResponseEntity<String> inserir(@RequestBody UsuarioEntity obj) {
+//         repository.save(obj);
+//         String mensagem = "Cadastro realizado com sucesso";
+//         return ResponseEntity.ok(mensagem);
+//     }
+
+//     @PostMapping("/api/usuario/login")
+//     public ResponseEntity<UsuarioEntity> fazerLogin(@RequestBody UsuarioEntity obj) {
+//         Optional<UsuarioEntity> retorno = repository.fazerLogin(obj.getEmail(), obj.getSenha());
+//         if (retorno.isPresent()) {
+//             return ResponseEntity.ok(retorno.get());
+//         } else {
+//             return ResponseEntity.ok(new UsuarioEntity());
+//         }
+//     }
+
+    // @PostMapping("/usuario/recuperar-senha")
+    // public String solicitarRecuperacaoSenha(@RequestParam String email) {
+    //     UsuarioEntity usuario = repository.findByEmail(email);
+
+    //     if (usuario == null) {
+    //         return "Usuário não encontrado";
+    //     }
+
+        // Gerar um token único
+        // String token = UUID.randomUUID().toString();
+        // usuario.setResetPasswordToken(token);
+        // usuario.setTokenExpirationDate(LocalDateTime.now().plusHours(1)); // Expira em 1 hora
+        // repository.save(usuario);
+
+        // Enviar e-mail com o link de recuperação de senha
+    //     String resetUrl = "http://localhost:4200.com/recuperar-senha?token=" + token;
+    //     String mensagem = "Clique no link para redefinir sua senha: " + resetUrl;
+
+    //     emailService.sendEmail(usuario.getEmail(), "Recuperação de Senha", mensagem);
+
+    //     return "Instruções de recuperação de senha enviadas para o e-mail.";
+    // }
+
+    // @PostMapping("/resetar-senha")
+    // public String redefinirSenha(@RequestParam String token, @RequestParam String novaSenha) {
+    //     UsuarioEntity usuario = repository.findByResetPasswordToken(token);
+    
+    //     if (usuario == null || usuario.getTokenExpirationDate().isBefore(LocalDateTime.now())) {
+    //         return "Token inválido ou expirado";
+    //     }
+    
+    //     // Atualizar a senha do usuário
+    //     usuario.setSenha(novaSenha); // Alterado para setSenha
+    //     usuario.setResetPasswordToken(null);
+    //     usuario.setTokenExpirationDate(null);
+//     //     repository.save(usuario);
+    
+//         return "Senha redefinida com sucesso";
+// }
+
+// }
+
 package com.dinafilmes.backend;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -24,6 +109,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @SuppressWarnings("unused")
@@ -32,6 +119,10 @@ import java.time.LocalDateTime;
 public class UsuarioController {
     @Autowired
     UsuarioRepository repository;
+
+    
+    @Autowired
+    private EmailService emailService;
 
 @PostMapping("/api/usuario")
 public ResponseEntity<String>
@@ -146,8 +237,74 @@ public void renderFotoUsuario(@PathVariable int codigo, HttpServletResponse resp
         IOUtils.copy(is, response.getOutputStream());
     } else {
         response.setStatus(HttpStatus.NOT_FOUND.value());
-    }
+
+}
+
 }
 
     
+    @PostMapping("/api/usuario/recuperar-senha")
+    public String solicitarRecuperacaoSenha(@RequestParam String email) {
+        UsuarioEntity usuario = repository.findByEmail(email);
+
+        if (usuario == null) {
+            return "Usuário não encontrado";
+        }
+
+        // Gerar um token único
+        String token = UUID.randomUUID().toString();
+        usuario.setResetPasswordToken(token);
+        usuario.setTokenExpirationDate(LocalDateTime.now().plusHours(1)); // Expira em 1 hora
+        repository.save(usuario);
+
+        // Enviar e-mail com o link de recuperação de senha
+        String resetUrl = "http://localhost:4200/nova-senha?token=" + token;
+        // String resetUrl = "http://localhost:4200 .com /recuperar-senha?token=" + token; original, antes de modificar
+        String mensagem = "Clique no link para redefinir sua senha: " + resetUrl;
+
+        emailService.sendEmail(usuario.getEmail(), "Recuperação de Senha", mensagem);
+
+        return "Instruções de recuperação de senha enviadas para o e-mail.";
+    }
+
+//     @PostMapping("/api/usuario/resetar-senha")
+//     public String redefinirSenha(@RequestParam String token, @RequestParam String novaSenha) {
+//         UsuarioEntity usuario = repository.findByResetPasswordToken(token);
+    
+        
+
+
+//         if (usuario == null || usuario.getTokenExpirationDate().isBefore(LocalDateTime.now())) {
+//             return "Token inválido ou expirado";
+//         }
+    
+//         // Atualizar a senha do usuário
+//         usuario.setSenha(novaSenha); // Alterado para setSenha
+//         usuario.setResetPasswordToken(null);
+//         usuario.setTokenExpirationDate(null);
+//         repository.save(usuario);
+    
+//         return "Senha redefinida com sucesso";
+// }
+
+@PostMapping("/api/usuario/resetar-senha")
+public ResponseEntity<String> redefinirSenha(@RequestBody ResetSenhaRequest request) {
+    String token = request.getToken();
+    String novaSenha = request.getNovaSenha();
+
+    UsuarioEntity usuario = repository.findByResetPasswordToken(token);
+
+    if (usuario == null || usuario.getTokenExpirationDate().isBefore(LocalDateTime.now())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token inválido ou expirado");
+    }
+
+    // Atualizar a senha do usuário
+    usuario.setSenha(novaSenha);
+    usuario.setResetPasswordToken(null);
+    usuario.setTokenExpirationDate(null);
+    repository.save(usuario);
+
+    return ResponseEntity.ok("Senha redefinida com sucesso");
+}
+
 }
